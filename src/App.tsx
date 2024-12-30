@@ -1,54 +1,51 @@
-import ejs from "ejs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { generate as ddlGenerate } from "./templates/ddl";
 import { generate as entityGenerate } from "./templates/java_entity";
+import MainForm, { FormData } from "./components/MainForm";
+import { Card, Input } from "@arco-design/web-react";
 import { Java } from "./utils";
-import MainForm from "./components/MainForm";
+import { javaTypeFrom } from "./constants";
 
 function App() {
-  useEffect(() => {
-    const tableName = "user_orders";
-    const tableFields = [
-      { name: "username", type: "VARCHAR(255)" },
-      { name: "password", type: "VARCHAR(255)", defaultValue: "admin" },
-      {
-        name: "image",
-        type: "VARCHAR(255)",
-        defaultValue: "https://",
-        comment: "图片地址",
-      },
-    ];
+  const [ddlText, setDdlText] = useState<string>("");
+  const [entityCodeText, setEntityCodeText] = useState<string>("");
 
-    const ddlTmpl = ddlGenerate({
-      tableName: "users",
-      fields: tableFields,
-      primaryKey: "id",
-      // characterSet: "utf8mb4"
-    });
+  useEffect(() => {}, []);
 
-    console.log(ddlTmpl);
+  const onFormSubmit = (formData: FormData) => {
+    const { tableName, fields } = formData;
 
-    const entityTmpl = entityGenerate({
-      moduleName: Java.toUpperCamel("user_order"),
-      fields: tableFields.map(({ name, comment }) => {
-        return {
-          type: "TODO",
-          name: Java.toLowerCamel(name),
-          comment: comment,
-        };
-      }),
-    });
+    setDdlText(
+      ddlGenerate({
+        tableName,
+        fields,
+        primaryKey: "id",
+      })
+    );
 
-    console.log(entityTmpl);
-  }, []);
-
-  const onFormSubmit = (values: {[key: string]: any}) => {
-    console.log(values);
-  }
+    setEntityCodeText(
+      entityGenerate({
+        moduleName: Java.toUpperCamel(tableName),
+        fields: fields.map(({ name, type, comment }) => {
+          return {
+            name: Java.toLowerCamel(name),
+            type: javaTypeFrom(Number.parseInt(type)),
+            comment,
+          };
+        }),
+      })
+    );
+  };
 
   return (
     <>
       <MainForm onSubmit={onFormSubmit} />
+      <Card title="DDL 数据库表">
+        <Input.TextArea value={ddlText} autoSize />
+      </Card>
+      <Card title="Entity 代码">
+        <Input.TextArea value={entityCodeText} autoSize />
+      </Card>
     </>
   );
 }

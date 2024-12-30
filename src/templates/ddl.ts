@@ -1,16 +1,9 @@
-export interface Field {
-  name: string;
-  comment?: string;
-  type: string;
-  characterSet?: string;
-  isNull?: string;
-  defaultValue?: string;
-  // ...
-}
+import { typeString } from "../constants";
+import { DBField } from "../types";
 
 export interface DDLPayload {
   tableName: string;
-  fields: Field[];
+  fields: DBField[];
   primaryKey: string;
   characterSet?: string;
 }
@@ -22,15 +15,17 @@ export function generate(payload: DDLPayload) {
     : "";
 
   return (
-    `CREATE TABLE \`${tableName}\` (\n` +
+    `CREATE TABLE IF NOT EXISTS \`${tableName}\` (\n` +
     fields
-      .map(({ name, type, defaultValue, comment }) => {
+      .map(({ name, type, defaultValue, comment, isNull }) => {
+        const ensureNotNull = isNull !== undefined ? (!isNull ? " NOT NULL" : "") : "";
         const ensureDefaultValue = defaultValue
           ? " ".concat('DEFAULT "', defaultValue, '"')
           : "";
         const ensureComment = comment ? ` COMMENT "${comment}"` : "";
+        const ensureType = typeString({ type: Number.parseInt(type), length: null, point: null });
 
-        return `\t\`${name}\` ${type}${ensureDefaultValue}${ensureComment},\n`;
+        return `\t\`${name}\` ${ensureType}${ensureNotNull}${ensureDefaultValue}${ensureComment},\n`;
       })
       .join("") +
     `\t PRIMARY KEY (\`${primaryKey}\`)\n` +

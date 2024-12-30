@@ -1,3 +1,5 @@
+import { SelectProps } from "@arco-design/web-react";
+
 export enum DatabaseTypes {
   TINYINT,
   INT,
@@ -15,30 +17,46 @@ export enum DatabaseTypes {
   // etc.
 }
 
-export const defaultTypeInfoFrom = (
-  dbType: DatabaseTypes
-): { length: number; point: number } | undefined => {
-  switch (dbType) {
-    case DatabaseTypes.TINYINT:
-      return { length: 1, point: 0 };
-    case DatabaseTypes.INT:
-      return { length: 11, point: 0 };
-    case DatabaseTypes.BIGINT:
-      return { length: 20, point: 0 };
-    case DatabaseTypes.DECIMAL:
-      return { length: 10, point: 2 };
-    case DatabaseTypes.VARCHAR:
-      return { length: 255, point: 0 };
-    default:
-      return undefined;
-  }
-};
+export const typeOptions = (): SelectProps["options"] => {
+  return [
+    { label: "TINYINT", value: DatabaseTypes.TINYINT },
+    { label: "INT", value: DatabaseTypes.INT },
+    { label: "BIGINT", value: DatabaseTypes.BIGINT },
+    { label: "FLOAT", value: DatabaseTypes.FLOAT },
+    { label: "DOUBLE", value: DatabaseTypes.DOUBLE },
+    { label: "DECIMAL", value: DatabaseTypes.DECIMAL },
+    { label: "DATE", value: DatabaseTypes.DATE },
+    { label: "DATETIME", value: DatabaseTypes.DATETIME },
+    { label: "TIME", value: DatabaseTypes.TIME },
+    { label: "TIMESTAMP", value: DatabaseTypes.TIMESTAMP },
+    { label: "VARCHAR", value: DatabaseTypes.VARCHAR },
+    { label: "TEXT", value: DatabaseTypes.TEXT },
+    { label: "LONGTEXT", value: DatabaseTypes.LONGTEXT },
+  ]
+}
+
+type DbTypeInfo = { type: number, length: number | null, point: number | null } | null;
+
+export const typeString = (typeInfo: DbTypeInfo): string => {
+  if (typeInfo === null) return "";
+
+  const { type, length, point } = typeInfo;
+
+  let template = DatabaseTypes[type].toString();
+
+  if (!length) return template;
+  template = `(${length}`;
+  if (!point) return template += ")";
+  template += `, ${point}`;
+  template += ")";
+
+  return template;
+}
 
 export const javaTypeFrom = (dbType: DatabaseTypes) => {
   switch (dbType) {
     case DatabaseTypes.TINYINT:
     case DatabaseTypes.INT:
-    case DatabaseTypes.BIGINT:
     case DatabaseTypes.BIGINT:
       return "Integer";
     case DatabaseTypes.TIMESTAMP:
