@@ -1,16 +1,20 @@
-interface Class {
+export interface Class {
   name: string;
 }
 
-interface VariableDefinition {
+export interface Comment {
+  comment?: string;
+}
+
+export interface VariableDefinition extends Comment {
   dataType: string;
   name: string;
 }
 
-interface ClassProperty extends VariableDefinition {
+export interface ClassProperty extends VariableDefinition {
   access: "public" | "private" | "protected" | "finally";
   dataType: string;
   name: string;
 }
 
-interface MethodParameter extends VariableDefinition {}
+export interface MethodParameter extends VariableDefinition {}
