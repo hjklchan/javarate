@@ -1,3 +1,5 @@
+import { Lang } from "./types";
+
 export namespace Java {
   export interface Identities {
     upperCamel: string;
@@ -68,4 +70,32 @@ export namespace Java {
         };
     }
   };
+}
+
+export const toUpperCamel = (value: string) => {
+  return value
+    .split("_")
+    .map((word) => {
+      return word.charAt(0).toUpperCase().concat(word.substring(1));
+    })
+    .join("");
+};
+
+export const toLowerCamel = (value: string) => {
+  return value
+    .split("_")
+    .map((word, index) => {
+      if (index === 0) return word;
+      return word.charAt(0).toUpperCase().concat(word.substring(1));
+    })
+    .join("");
+};
+
+export const identities = (tableName: string): Lang.Java.Identities => {
+    return {
+        naming: {
+            lowerCamel: toLowerCamel(tableName),
+            upperCamel: toUpperCamel(tableName),
+        }
+    }
 }

@@ -149,6 +149,7 @@ const MainForm = (props: MainFormProps) => {
                             shape="circle"
                             status="danger"
                             onClick={() => _operations.remove(index)}
+                            disabled={disabled}
                           ></Button>
                         </Col>
                       </Row>

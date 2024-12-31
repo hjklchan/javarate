@@ -3,12 +3,14 @@ import { generate as ddlGenerate } from "./templates/ddl";
 import { generate as entityGenerate } from "./templates/java_entity";
 import MainForm, { FormData } from "./components/MainForm";
 import { Card, Input } from "@arco-design/web-react";
-import { Java } from "./utils";
+import { Java, toUpperCamel } from "./utils";
 import { javaTypeFrom } from "./constants";
+import { mapperGenerator } from "./templates/java_mapper";
 
 function App() {
   const [ddlText, setDdlText] = useState<string>("");
   const [entityCodeText, setEntityCodeText] = useState<string>("");
+  const [mapperCodeText, setMapperCodeText] = useState<string>("");
 
   useEffect(() => {}, []);
 
@@ -35,6 +37,11 @@ function App() {
         }),
       })
     );
+
+    setMapperCodeText(mapperGenerator({
+      moduleName: toUpperCamel(tableName),
+      properties: [],
+    }))
   };
 
   return (
@@ -45,6 +52,9 @@ function App() {
       </Card>
       <Card title="Entity 代码">
         <Input.TextArea value={entityCodeText} autoSize />
+      </Card>
+      <Card title="Mapper 代码">
+        <Input.TextArea value={mapperCodeText} autoSize />
       </Card>
     </>
   );
