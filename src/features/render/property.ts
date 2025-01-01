@@ -1,5 +1,7 @@
-import { Lang } from "../../types"
+// import { Lang } from "../../types"
+// import { DbColumn } from "../types/form"
+import {  } from "../types/lang/java";
 
-export const renderProperty = (p: Lang.Java.Property) => {
+export const renderProperty = (): string => {
     return 
 }

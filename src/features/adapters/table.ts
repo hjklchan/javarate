@@ -7,11 +7,13 @@ export const fromFormData = (formData: Form): Table => {
   return {
     name: tableName,
     columns: columns.map(
-      ({ name, comment, dataType, isNull, defaultValue }) => {
+      ({ name, comment, dataType, length, point, isNull, defaultValue }) => {
         return {
           name,
           comment,
           dataType,
+          length,
+          point,
           isNull: isNull ?? true,
           defaultValue,
         };

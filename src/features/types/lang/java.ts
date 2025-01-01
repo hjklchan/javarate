@@ -12,7 +12,7 @@ export interface VariableDefinition extends Comment {
 }
 
 export interface ClassProperty extends VariableDefinition {
-  access: "public" | "private" | "protected" | "finally";
+  access: "public" | "private" | "protected";
   dataType: string;
   name: string;
 }
